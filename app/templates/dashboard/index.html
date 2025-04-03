@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snow Tec</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="../../static/css/all.min.css">
+    <style>
+        .task-card {
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+        }
+
+        .progress {
+            height: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                     class="bi bi-menu-button-wide" viewBox="0 0 16 16">
+                    <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0h13A1.5 1.5 0 0 1 16 1.5v2A1.5 1.5 0 0 1 14.5 5h-13A1.5 1.5 0 0 1 0 3.5v-2zM1.5 1a.5.5 0 0 0-.5.5v2a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-13z"/>
+                    <path d="M2 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm10.823.323-.396-.396A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+                项目管理中心
+            </h1>
+            <p class="text-muted">当前共有 <span id="task-count">0</span> 个项目</p>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" id="refresh-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ubuntu"
+                     viewBox="0 0 16 16">
+                    <path d="M2.273 9.53a2.273 2.273 0 1 0 0-4.546 2.273 2.273 0 0 0 0 4.547Zm9.467-4.984a2.273 2.273 0 1 0 0-4.546 2.273 2.273 0 0 0 0 4.546ZM7.4 13.108a5.535 5.535 0 0 1-3.775-2.88 3.273 3.273 0 0 1-1.944.24 7.4 7.4 0 0 0 5.328 4.465c.53.113 1.072.169 1.614.166a3.253 3.253 0 0 1-.666-1.9 5.639 5.639 0 0 1-.557-.091Zm3.828 2.285a2.273 2.273 0 1 0 0-4.546 2.273 2.273 0 0 0 0 4.546Zm3.163-3.108a7.436 7.436 0 0 0 .373-8.726 3.276 3.276 0 0 1-1.278 1.498 5.573 5.573 0 0 1-.183 5.535 3.26 3.26 0 0 1 1.088 1.693ZM2.098 3.998a3.28 3.28 0 0 1 1.897.486 5.544 5.544 0 0 1 4.464-2.388c.037-.67.277-1.313.69-1.843a7.472 7.472 0 0 0-7.051 3.745Z"/>
+                </svg>
+                刷新列表
+            </button>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">任务列表</h5>
+                <div class="input-group w-auto">
+                    <input type="text" class="form-control form-control-sm" placeholder="搜索任务..." id="search-input">
+                    <button class="btn btn-outline-secondary btn-sm" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th width="5%">#</th>
+                        <th width="25%">任务名称</th>
+                        <th width="25%">创建时间</th>
+                        <th width="15%">状态</th>
+                        <th width="30%">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="task-table-body">
+                    <!-- 任务数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm justify-content-center mb-0" id="pagination">
+                    <!-- 分页将通过JavaScript动态生成 -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- 操作确认模态框 -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">确认操作</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                您确定要执行此操作吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmAction">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="loadingModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS 和依赖 -->
+<script src="../../static/js/bootstrap.bundle.min.js"></script>
+<!-- jQuery -->
+<script src="../../static/js/jquery-3.6.0.min.js"></script>
+<script src="../../static/js/common.js"></script>
+<script src="../../static/js/request.js"></script>
+<script src="../../static/js/toastr.min.js"></script>
+<script>
+
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-bottom"
+    };
+    // 模拟任务数据
+    let mockTasks = [];
+
+    // 当前操作的任务ID
+    let currentTaskId = null;
+    let currentAction = null;
+
+    // 页面加载时初始化
+    $(document).ready(function () {
+        init()
+    });
+
+    function init() {
+        $('#loadingModal').modal('show');
+        getDashboardInfo('/dashboard/data', 'POST', {})
+            .then(data => {
+                mockTasks = data.list
+                renderTaskTable(mockTasks);
+                updateTaskCount();
+
+                // 刷新按钮点击事件
+                $('#refresh-btn').click(function () {
+                    location.reload()
+                });
+
+                // 确认模态框操作
+                $('#confirmAction').click(function () {
+                    if (currentTaskId && currentAction) {
+                        performAction(currentTaskId, currentAction);
+                        $('#confirmModal').modal('hide');
+                    }
+                });
+                $('#loadingModal').modal('hide');
+                $('#task-count').html(data.total)
+            })
+            .catch(err => {
+
+            });
+    }
+
+    // 渲染任务表格
+    function renderTaskTable(tasks) {
+        const $tbody = $('#task-table-body');
+        $tbody.empty();
+
+        tasks.forEach(task => {
+            const $tr = $(`
+                    <tr data-task-id="${task.id}">
+                        <td>${task.id}</td>
+                        <td>${task.name}</td>
+                        <td>${task.created_at}</td>
+                        <td>
+                            ${getStatusBadge(task.status)}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-outline-primary btn-sm action-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-start-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="M10.229 5.055a.5.5 0 0 0-.52.038L7 7.028V5.5a.5.5 0 0 0-1 0v5a.5.5 0 0 0 1 0V8.972l2.71 1.935a.5.5 0 0 0 .79-.407v-5a.5.5 0 0 0-.271-.445z"/>
+</svg> 启动
+                                </button>
+                                &nbsp
+                                <button class="btn btn-outline-danger btn-sm stop-btn" ${task.status !== 'running' ? 'disabled' : ''}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-start-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+  <path d="M10.229 5.055a.5.5 0 0 0-.52.038L7 7.028V5.5a.5.5 0 0 0-1 0v5a.5.5 0 0 0 1 0V8.972l2.71 1.935a.5.5 0 0 0 .79-.407v-5a.5.5 0 0 0-.271-.445z"/>
+</svg> 停止
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `);
+
+            $tbody.append($tr);
+        });
+
+        // 绑定按钮事件
+        bindButtonEvents();
+    }
+
+    // 获取状态标签
+    function getStatusBadge(status) {
+        const statusMap = {
+            'running': ['进行中', 'bg-primary'],
+            'pending': ['等待中', 'bg-warning text-dark'],
+            'completed': ['已完成', 'bg-success'],
+            'failed': ['已失败', 'bg-danger'],
+            'stopped': ['已停止', 'bg-secondary']
+        };
+        const [text, cls] = statusMap[status] || ['未知', 'bg-dark'];
+        return `<span class="badge ${cls} status-badge">${text}</span>`;
+    }
+
+    // 绑定按钮事件
+    function bindButtonEvents() {
+        // 操作按钮
+        $('.action-btn:not(:disabled)').click(function () {
+            const $tr = $(this).closest('tr');
+            currentTaskId = $tr.data('task-id');
+            currentAction = 'start';
+            showConfirmModal('启动任务', `确定要启动任务 #${currentTaskId} 吗？`);
+        });
+
+        // 停止按钮
+        $('.stop-btn:not(:disabled)').click(function () {
+            const $tr = $(this).closest('tr');
+            currentTaskId = $tr.data('task-id');
+            currentAction = 'stop';
+            showConfirmModal('停止任务', `确定要停止任务 #${currentTaskId} 吗？`);
+        });
+
+        // 删除按钮
+        $('.delete-btn').click(function () {
+            const $tr = $(this).closest('tr');
+            currentTaskId = $tr.data('task-id');
+            currentAction = 'delete';
+            showConfirmModal('删除任务', `确定要永久删除任务 #${currentTaskId} 吗？此操作不可恢复！`);
+        });
+    }
+
+    // 显示确认模态框
+    function showConfirmModal(title, message) {
+        $('#modalTitle').text(title);
+        $('#modalBody').text(message);
+        $('#confirmModal').modal('show');
+    }
+
+    // 执行操作
+    function performAction(taskId, action) {
+        // 这里应该替换为实际的AJAX调用
+        console.log(`执行操作: ${action} 任务 #${taskId}`);
+
+        // 模拟操作效果
+        let message = '';
+        switch (action) {
+            case 'start':
+                message = '任务已启动';
+                updateTaskStatus(taskId, 'running');
+                break;
+            case 'stop':
+                message = '任务已停止';
+                updateTaskStatus(taskId, 'stopped');
+                break;
+            case 'delete':
+                message = '任务已删除';
+                removeTask(taskId);
+                break;
+        }
+
+        showToast(message, 'success');
+        updateTaskCount();
+    }
+
+    // 更新任务状态（模拟）
+    function updateTaskStatus(taskId, newStatus) {
+        const task = mockTasks.find(t => t.id === taskId);
+        if (task) {
+            task.status = newStatus;
+            if (newStatus === 'running') {
+                task.progress = task.progress > 0 ? task.progress : 5;
+            }
+            renderTaskTable(mockTasks);
+        }
+    }
+
+    // 删除任务（模拟）
+    function removeTask(taskId) {
+        const index = mockTasks.findIndex(t => t.id === taskId);
+        if (index !== -1) {
+            mockTasks.splice(index, 1);
+            renderTaskTable(mockTasks);
+        }
+    }
+
+    // 更新任务计数
+    function updateTaskCount() {
+        const activeTasks = mockTasks.filter(t =>
+            t.status === 'pending' || t.status === 'running'
+        ).length;
+
+    }
+
+    // 显示Toast通知
+    function showToast(message, type = 'info') {
+        // 实际项目中可以使用Toast组件
+        alert(`${type.toUpperCase()}: ${message}`);
+    }
+</script>
+</body>
+</html>

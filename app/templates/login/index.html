@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <title>Snow Tec</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a4a4a;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #1976D2;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+        }
+
+        a {
+            color: #2196F3;
+            text-decoration: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 24px;
+                margin: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h1>欢迎登录</h1>
+    <form>
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" id="username" required autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" id="password" required autocomplete="current-password">
+        </div>
+        <button id="submit" onclick="login()">立即登录</button>
+    </form>
+</div>
+</body>
+
+<script src="../../static/js/jquery-3.6.0.min.js"></script>
+<script src="../../static/js/common.js"></script>
+<script src="../../static/js/request.js"></script>
+<script src="../../static/js/toastr.min.js"></script>
+<script>
+
+    // 页面加载时初始化
+    $(document).ready(function () {
+        const token = localStorage.getItem('Authorization')
+        if (token.length !== 0) {
+            window.location.href = '/dashboard/list';
+        }
+    });
+
+
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-bottom"
+    };
+
+    function login() {
+        let username = $('#username').val().trim();
+        let password = $('#password').val().trim();
+
+        const button = $('#submit');
+        // 禁用提交按钮
+        button.prop('disabled', true).html(`<span class="spinner-border spinner-border-sm" role="status"></span>登录中...`);
+
+        try {
+            loginRequest('/login', 'POST', {"username": username, "password": password})
+                .then(data => {
+                    localStorage.setItem('Authorization', data.token);
+                    button.prop('disabled', false).html(`<span class="spinner-border spinner-border-sm" role="status"></span>立即登录`);
+                    window.location.href = '/dashboard/list';
+                })
+                .catch(err => {
+                    button.prop('disabled', false).html(`<span class="spinner-border spinner-border-sm" role="status"></span>立即登录`);
+                });
+        } catch (error) {
+            button.prop('disabled', true).html(`<span class="spinner-border spinner-border-sm" role="status"></span>立即登录`);
+        }
+    }
+</script>
+</html>

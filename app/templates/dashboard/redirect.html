@@ -1,0 +1,15 @@
+<!-- templates/auth_redirect.html -->
+<script>
+const token = localStorage.getItem('Authorization')
+
+fetch('/dashboard/list', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
+.then(response => {
+  if(!response.ok) {
+      window.location.href = '/';
+  }
+});
+</script>
